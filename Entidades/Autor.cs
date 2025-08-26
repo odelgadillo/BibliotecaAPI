@@ -8,4 +8,6 @@ public class Autor
 
     [Required]
     public required string Nombre { get; set; }
+
+    public List<Libro> Libros { get; set; } = new();
 }
