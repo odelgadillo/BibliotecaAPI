@@ -2,6 +2,7 @@ using System;
 using BibliotecaAPI.Datos;
 using BibliotecaAPI.Entidades;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace BibliotecaAPI.Controllers;
 
@@ -18,13 +19,21 @@ public class AutoresController : ControllerBase
 
 
     [HttpGet]
-    public IEnumerable<Autor> Get()
+    public async Task<IEnumerable<Autor>> Get()
     {
-        return new List<Autor>
+        return await context.Autores.ToListAsync();
+    }
+
+    [HttpGet("{id:int}")]
+    public async Task<ActionResult<Autor>> Get(int id)
+    {
+        var autor = await context.Autores.FirstOrDefaultAsync(x => x.Id == id);
+        if (autor is null)
         {
-            new Autor{Id=1, Nombre="Felipe" },
-            new Autor{Id=2, Nombre="Omar"}
-        };
+            return NotFound();
+        }
+
+        return autor;
     }
 
     [HttpPost]
