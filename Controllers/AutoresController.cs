@@ -43,4 +43,23 @@ public class AutoresController : ControllerBase
         await context.SaveChangesAsync();
         return Ok();
     }
+
+    [HttpPut("{id:int}")]
+    public async Task<ActionResult> Put(int id, Autor autor)
+    {
+        if (autor.Id != id)
+        {
+            return BadRequest("El id del autor no coincide con el id de la URL.");
+        }
+
+        var existe = await context.Autores.AnyAsync(x => x.Id == id);
+        if (!existe)
+        {
+            return NotFound();
+        }
+
+        context.Update(autor);
+        await context.SaveChangesAsync();
+        return Ok();
+    }
 }
