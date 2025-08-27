@@ -24,7 +24,7 @@ public class AutoresController : ControllerBase
         return await context.Autores.ToListAsync();
     }
 
-    [HttpGet("{id:int}")]
+    [HttpGet("{id:int}", Name = "ObtenerAutor")]
     public async Task<ActionResult<Autor>> Get(int id)
     {
         var autor = await context.Autores
@@ -43,7 +43,7 @@ public class AutoresController : ControllerBase
     {
         context.Add(autor);
         await context.SaveChangesAsync();
-        return Ok();
+        return CreatedAtRoute("ObtenerAutor", new { id = autor.Id}, autor);
     }
 
     [HttpPut("{id:int}")]
