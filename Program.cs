@@ -1,5 +1,4 @@
 using System.Text.Json.Serialization;
-using BibliotecaAPI;
 using BibliotecaAPI.Datos;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,10 +14,6 @@ builder.Services.AddDbContext<ApplicationDbContext>(opciones =>
 var app = builder.Build();
 
 // area de middlewares (software intermedio)
-
-app.UseLogueaPeticion();
-
-app.UseBloqueaPeticion();
 
 app.MapControllers();
 
