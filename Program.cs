@@ -18,6 +18,8 @@ var app = builder.Build();
 
 app.UseLogueaPeticion();
 
+app.UseBloqueaPeticion();
+
 app.MapControllers();
 
 app.Run();
