@@ -8,7 +8,7 @@ public class Autor
     public int Id { get; set; }
 
     [Required]
-    [StringLength(20, ErrorMessage = "El campo {0} debe tener {1} caracteres o menos")]
+    [StringLength(150, ErrorMessage = "El campo {0} debe tener {1} caracteres o menos")]
     [PrimeraLetraMayuscula]
     public required string Nombre { get; set; }
 
