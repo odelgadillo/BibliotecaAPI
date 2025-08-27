@@ -22,7 +22,7 @@ public class AutoresController : ControllerBase
     }
 
 
-    [HttpGet]
+    [HttpGet] // api/autores
     public async Task<IEnumerable<AutorDTO>> Get()
     {
         var autores = await context.Autores.ToListAsync();
@@ -32,7 +32,7 @@ public class AutoresController : ControllerBase
     }
 
     [HttpGet("{id:int}", Name = "ObtenerAutor")]
-    public async Task<ActionResult<AutorDTO>> Get(int id)
+    public async Task<ActionResult<AutorConLibrosDTO>> Get(int id)
     {
         var autor = await context.Autores
             .Include(x => x.Libros)
@@ -42,7 +42,7 @@ public class AutoresController : ControllerBase
         {
             return NotFound();
         }
-        var autorDTO = mapper.Map<AutorDTO>(autor);
+        var autorDTO = mapper.Map<AutorConLibrosDTO>(autor);
         return autorDTO;
     }
 
