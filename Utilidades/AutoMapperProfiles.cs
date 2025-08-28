@@ -18,6 +18,8 @@ namespace BibliotecaAPI.Utilidades
                     config => config.MapFrom(autor => MapearNombreYApellidoAutor(autor)));
 
             CreateMap<AutorCreacionDTO, Autor>();
+            CreateMap<Autor, AutorPatchDTO>().ReverseMap();
+
             CreateMap<Libro, LibroDTO>();
             CreateMap<LibroCreacionDTO, Libro>();
 

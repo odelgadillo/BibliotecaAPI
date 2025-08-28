@@ -3,6 +3,7 @@ using AutoMapper;
 using BibliotecaAPI.Datos;
 using BibliotecaAPI.DTOs;
 using BibliotecaAPI.Entidades;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -56,10 +57,39 @@ public class AutoresController : ControllerBase
         return CreatedAtRoute("ObtenerAutor", new { id = autor.Id }, autorDTO);
     }
 
+    [HttpPatch("{id:int}")]
+    public async Task<ActionResult> Patch(int id, JsonPatchDocument<AutorPatchDTO> patchDoc)
+    {
+        if (patchDoc is null)
+        {
+            return BadRequest();
+        }
+
+        var autorDB = await context.Autores.FirstOrDefaultAsync(x => x.Id == id);
+        if (autorDB is null)
+        {
+            return NotFound();
+        }
+
+        var autorPatchDTO = mapper.Map<AutorPatchDTO>(autorDB);
+        patchDoc.ApplyTo(autorPatchDTO, ModelState);
+
+        var esValido = TryValidateModel(autorPatchDTO);
+        if (!esValido)
+        {
+            return ValidationProblem();
+        }
+
+        mapper.Map(autorPatchDTO, autorDB);
+        await context.SaveChangesAsync();
+
+        return NoContent();
+    }
+
     [HttpPut("{id:int}")]
     public async Task<ActionResult> Put(int id, AutorCreacionDTO autorCreacionDTO)
     {
-        var autor = mapper.Map<Autor>(autorCreacionDTO);  
+        var autor = mapper.Map<Autor>(autorCreacionDTO);
         var existe = await context.Autores.AnyAsync(x => x.Id == id);
         if (!existe)
             return NotFound();
