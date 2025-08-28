@@ -67,7 +67,7 @@ public class AutoresController : ControllerBase
 
         context.Update(autor);
         await context.SaveChangesAsync();
-        return Ok();
+        return NoContent();
     }
 
     [HttpDelete("{id:int}")]
@@ -79,6 +79,6 @@ public class AutoresController : ControllerBase
             return NotFound();
         }
 
-        return Ok();
+        return NoContent();
     }
 }
