@@ -32,7 +32,7 @@ namespace BibliotecaAPI.Controllers
         public async Task<ActionResult<LibroConAutorDTO>> Get(int id)
         {
             var libro = await context.Libros
-                .Include(x=> x.Autor)
+                .Include(x=> x.Autores)
                 .FirstOrDefaultAsync(x => x.Id == id);
             if (libro is null)
             {
@@ -42,44 +42,44 @@ namespace BibliotecaAPI.Controllers
             return libroDTO;
         }
 
-        [HttpPost]
-        public async Task<ActionResult> Post(LibroCreacionDTO libroCreacionDTO)
-        {
-            var libro = mapper.Map<Libro>(libroCreacionDTO);
-            var existeAutor = await context.Autores.AnyAsync(x => x.Id == libro.AutorId);
-            if (!existeAutor)
-            {
-                ModelState.AddModelError(nameof(libro.AutorId), $"El autor de libro {libro.AutorId} no existe");
-                return ValidationProblem();
-            }
+        // [HttpPost]
+        // public async Task<ActionResult> Post(LibroCreacionDTO libroCreacionDTO)
+        // {
+        //     var libro = mapper.Map<Libro>(libroCreacionDTO);
+        //     var existeAutor = await context.Autores.AnyAsync(x => x.Id == libro.AutorId);
+        //     if (!existeAutor)
+        //     {
+        //         ModelState.AddModelError(nameof(libro.AutorId), $"El autor de libro {libro.AutorId} no existe");
+        //         return ValidationProblem();
+        //     }
 
-            context.Add(libro);
-            await context.SaveChangesAsync();
+        //     context.Add(libro);
+        //     await context.SaveChangesAsync();
 
-            var libroDTO = mapper.Map<LibroDTO>(libro);
-            return CreatedAtRoute("ObtenerLibro", new { id = libro.Id }, libroDTO);
-        }
+        //     var libroDTO = mapper.Map<LibroDTO>(libro);
+        //     return CreatedAtRoute("ObtenerLibro", new { id = libro.Id }, libroDTO);
+        // }
 
-        [HttpPut("{id:int}")]
-        public async Task<ActionResult> Put(int id, LibroCreacionDTO libroCreacionDTO)
-        {
-            var libro = mapper.Map<Libro>(libroCreacionDTO);
-            libro.Id = id;
+        // [HttpPut("{id:int}")]
+        // public async Task<ActionResult> Put(int id, LibroCreacionDTO libroCreacionDTO)
+        // {
+        //     var libro = mapper.Map<Libro>(libroCreacionDTO);
+        //     libro.Id = id;
 
-            var existeAutor = await context.Autores.AnyAsync(x => x.Id == libro.AutorId);
-            if (!existeAutor)
-                return BadRequest($"El autor de libro {libro.AutorId} no existe");
+        //     var existeAutor = await context.Autores.AnyAsync(x => x.Id == libro.AutorId);
+        //     if (!existeAutor)
+        //         return BadRequest($"El autor de libro {libro.AutorId} no existe");
 
-            var existe = await context.Libros.AnyAsync(x => x.Id == id);
-            if (!existe)
-            {
-                return NotFound();
-            }
+        //     var existe = await context.Libros.AnyAsync(x => x.Id == id);
+        //     if (!existe)
+        //     {
+        //         return NotFound();
+        //     }
 
-            context.Update(libro);
-            await context.SaveChangesAsync();
-            return NoContent();
-        }
+        //     context.Update(libro);
+        //     await context.SaveChangesAsync();
+        //     return NoContent();
+        // }
 
         [HttpDelete("{id:int}")]
         public async Task<ActionResult> Delete(int id)
