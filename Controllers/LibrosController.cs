@@ -85,26 +85,43 @@ namespace BibliotecaAPI.Controllers
             }
         }
 
-        // [HttpPut("{id:int}")]
-        // public async Task<ActionResult> Put(int id, LibroCreacionDTO libroCreacionDTO)
-        // {
-        //     var libro = mapper.Map<Libro>(libroCreacionDTO);
-        //     libro.Id = id;
+        [HttpPut("{id:int}")]
+        public async Task<ActionResult> Put(int id, LibroCreacionDTO libroCreacionDTO)
+        {
+             if (libroCreacionDTO.AutoresIds is null || libroCreacionDTO.AutoresIds.Count == 0)
+            {
+                ModelState.AddModelError(nameof(libroCreacionDTO.AutoresIds), "No se puede crear un libro sin autores");
+                return ValidationProblem();
+            }
 
-        //     var existeAutor = await context.Autores.AnyAsync(x => x.Id == libro.AutorId);
-        //     if (!existeAutor)
-        //         return BadRequest($"El autor de libro {libro.AutorId} no existe");
+            var autoresIdExisten = await context.Autores
+                                    .Where(x => libroCreacionDTO.AutoresIds.Contains(x.Id))
+                                    .Select(x => x.Id).ToListAsync();
 
-        //     var existe = await context.Libros.AnyAsync(x => x.Id == id);
-        //     if (!existe)
-        //     {
-        //         return NotFound();
-        //     }
+            if (autoresIdExisten.Count != libroCreacionDTO.AutoresIds.Count)
+            {
+                var autoresNoExisten = libroCreacionDTO.AutoresIds.Except(autoresIdExisten);
+                var autoresNoExistenString = string.Join(",", autoresNoExisten);
+                var mensajeDeError = $"Los siguientes autores no existen: {autoresNoExistenString}";
+                ModelState.AddModelError(nameof(libroCreacionDTO.AutoresIds), mensajeDeError);
+                return ValidationProblem();
+            }
 
-        //     context.Update(libro);
-        //     await context.SaveChangesAsync();
-        //     return NoContent();
-        // }
+            var libroDB = await context.Libros
+                        .Include(x => x.Autores)
+                        .FirstOrDefaultAsync(x => x.Id == id);
+
+            if (libroDB is null)
+            {
+                return NotFound();
+            }
+
+            libroDB = mapper.Map(libroCreacionDTO, libroDB);
+            AsignarOrdenAutores(libroDB);
+
+            await context.SaveChangesAsync();
+            return NoContent();
+        }
 
         [HttpDelete("{id:int}")]
         public async Task<ActionResult> Delete(int id)
