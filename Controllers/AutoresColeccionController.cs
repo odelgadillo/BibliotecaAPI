@@ -60,7 +60,11 @@ namespace BibliotecaAPI.Controllers
             context.AddRange(autores);
             await context.SaveChangesAsync();
 
-            return Ok();
+            var autoresDTO = mapper.Map<IEnumerable<AutorDTO>>(autores);
+            var ids = autores.Select(x => x.Id);
+            var idsString = string.Join(",", ids);
+
+            return CreatedAtRoute("ObtenerAutoresPorIds", new { ids = idsString }, autoresDTO);
         }
     }
 }
