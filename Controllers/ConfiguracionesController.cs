@@ -1,21 +1,31 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 
 namespace BibliotecaAPI.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/configuraciones")]
     [ApiController]
-    public class Configuraciones : ControllerBase
+    public class ConfiguracionesCotroller : ControllerBase
     {
         private readonly IConfiguration configuration;
         private readonly IConfigurationSection seccion_01;
         private readonly IConfigurationSection seccion_02;
+        private readonly PersonaOpciones _opcionesPersona;
 
-        public Configuraciones(IConfiguration configuration)
+        public ConfiguracionesCotroller(IConfiguration configuration, IOptions<PersonaOpciones> opcionesPersona)
         {
             this.configuration = configuration;
-            seccion_01 = configuration.GetSection("seccion1");
-            seccion_02 = configuration.GetSection("seccion2");
+            seccion_01 = configuration.GetSection("seccion_1");
+            seccion_02 = configuration.GetSection("seccion_2");
+            _opcionesPersona = opcionesPersona.Value;
+        }
+
+        [HttpGet("seccion_1_opciones")]
+        public ActionResult GetSeccionOpciones()
+        {
+            
+            return Ok(_opcionesPersona);
         }
 
         [HttpGet("proveedores")]

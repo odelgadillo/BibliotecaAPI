@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using BibliotecaAPI;
 using BibliotecaAPI.Datos;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,6 +14,11 @@ var diccionarioConfiguraciones = new Dictionary<string, string>
 builder.Configuration.AddInMemoryCollection(diccionarioConfiguraciones!);
 
 //area de srvicios
+
+builder.Services.AddOptions<PersonaOpciones>()
+    .Bind(builder.Configuration.GetSection(PersonaOpciones.Seccion))
+    .ValidateDataAnnotations()
+    .ValidateOnStart();
 
 builder.Services.AddAutoMapper(cfg =>{ }, typeof(Program).Assembly);
 builder.Services.AddControllers().AddNewtonsoftJson();
