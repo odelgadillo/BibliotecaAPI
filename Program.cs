@@ -5,6 +5,13 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var diccionarioConfiguraciones = new Dictionary<string, string>
+{
+    {"quien_soy", "un dicccionario en memoria"}
+};
+
+builder.Configuration.AddInMemoryCollection(diccionarioConfiguraciones!);
+
 //area de srvicios
 
 builder.Services.AddAutoMapper(cfg =>{ }, typeof(Program).Assembly);
