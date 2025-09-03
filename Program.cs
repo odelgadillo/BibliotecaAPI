@@ -20,7 +20,14 @@ builder.Services.AddOptions<PersonaOpciones>()
     .ValidateDataAnnotations()
     .ValidateOnStart();
 
-builder.Services.AddAutoMapper(cfg =>{ }, typeof(Program).Assembly);
+builder.Services.AddOptions<TarifaOpciones>()
+    .Bind(builder.Configuration.GetSection(TarifaOpciones.seccion))
+    .ValidateDataAnnotations()
+    .ValidateOnStart();
+
+builder.Services.AddSingleton<PagosProcesamiento>();
+
+builder.Services.AddAutoMapper(cfg => { }, typeof(Program).Assembly);
 builder.Services.AddControllers().AddNewtonsoftJson();
 
 builder.Services.AddDbContext<ApplicationDbContext>(opciones =>
