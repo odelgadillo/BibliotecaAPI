@@ -1,18 +1,43 @@
+using System.Text;
 using System.Text.Json.Serialization;
 using BibliotecaAPI;
 using BibliotecaAPI.Datos;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 
 var builder = WebApplication.CreateBuilder(args);
 
-//area de srvicios
+//area de servicios
 
 builder.Services.AddAutoMapper(cfg => { }, typeof(Program).Assembly);
 builder.Services.AddControllers().AddNewtonsoftJson();
 
 builder.Services.AddDbContext<ApplicationDbContext>(opciones =>
     opciones.UseSqlServer("name=DefaultConnection"));
+
+
+
+builder.Services.AddIdentityCore<IdentityUser>()
+    .AddEntityFrameworkStores<ApplicationDbContext>()
+    .AddDefaultTokenProviders();
+builder.Services.AddScoped<UserManager<IdentityUser>>();        //Manejadro de usuarios para registrar usuarios
+builder.Services.AddScoped<SignInManager<IdentityUser>>();      //Permite autenticar usuarios
+builder.Services.AddHttpContextAccessor();                      //Permite acceder al contexto http desde cualquier clase
+builder.Services.AddAuthentication().AddJwtBearer(opciones =>
+{
+    opciones.MapInboundClaims = false; //Para que ASP.Net Core no cambie el nombre de un claim por otro de forma automatica
+    opciones.TokenValidationParameters = new TokenValidationParameters //Define que se va a tomar en cuenta al validar un token
+    {
+        ValidateIssuer = false,             //Valida el emisor del token
+        ValidateAudience = false,           //Valida la audiencia
+        ValidateLifetime = true,            //Valida el tiempo de vida del token
+        ValidateIssuerSigningKey = true,    //valida la llave secreta
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["llavejwt"]!)),    // Configurar llave secreta
+        ClockSkew = TimeSpan.Zero           //Para no tener problemas de discrepancia temporal
+    };
+});
 
 var app = builder.Build();
 
