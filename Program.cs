@@ -6,26 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var diccionarioConfiguraciones = new Dictionary<string, string>
-{
-    {"quien_soy", "un dicccionario en memoria"}
-};
-
-builder.Configuration.AddInMemoryCollection(diccionarioConfiguraciones!);
-
 //area de srvicios
-
-builder.Services.AddOptions<PersonaOpciones>()
-    .Bind(builder.Configuration.GetSection(PersonaOpciones.Seccion))
-    .ValidateDataAnnotations()
-    .ValidateOnStart();
-
-builder.Services.AddOptions<TarifaOpciones>()
-    .Bind(builder.Configuration.GetSection(TarifaOpciones.seccion))
-    .ValidateDataAnnotations()
-    .ValidateOnStart();
-
-builder.Services.AddSingleton<PagosProcesamiento>();
 
 builder.Services.AddAutoMapper(cfg => { }, typeof(Program).Assembly);
 builder.Services.AddControllers().AddNewtonsoftJson();
