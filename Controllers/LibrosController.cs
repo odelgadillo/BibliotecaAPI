@@ -2,6 +2,7 @@
 using BibliotecaAPI.Datos;
 using BibliotecaAPI.DTOs;
 using BibliotecaAPI.Entidades;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,6 +10,7 @@ namespace BibliotecaAPI.Controllers
 {
     [ApiController]
     [Route("api/libros")]
+    [Authorize]
     public class LibrosController : ControllerBase
     {
         private readonly ApplicationDbContext context;
@@ -33,7 +35,7 @@ namespace BibliotecaAPI.Controllers
         {
             var libro = await context.Libros
                 .Include(x => x.Autores)
-                    .ThenInclude(x=> x.Autor)
+                    .ThenInclude(x => x.Autor)
                 .FirstOrDefaultAsync(x => x.Id == id);
             if (libro is null)
             {
@@ -89,7 +91,7 @@ namespace BibliotecaAPI.Controllers
         [HttpPut("{id:int}")]
         public async Task<ActionResult> Put(int id, LibroCreacionDTO libroCreacionDTO)
         {
-             if (libroCreacionDTO.AutoresIds is null || libroCreacionDTO.AutoresIds.Count == 0)
+            if (libroCreacionDTO.AutoresIds is null || libroCreacionDTO.AutoresIds.Count == 0)
             {
                 ModelState.AddModelError(nameof(libroCreacionDTO.AutoresIds), "No se puede crear un libro sin autores");
                 return ValidationProblem();

@@ -3,6 +3,7 @@ using AutoMapper;
 using BibliotecaAPI.Datos;
 using BibliotecaAPI.DTOs;
 using BibliotecaAPI.Entidades;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
@@ -13,6 +14,7 @@ namespace BibliotecaAPI.Controllers
 {
     [ApiController]
     [Route("api/libros/{libroId:int}/comentarios")]
+    [Authorize]
     public class ComentariosController : ControllerBase
     {
         private readonly ApplicationDbContext context;
@@ -122,7 +124,7 @@ namespace BibliotecaAPI.Controllers
                 return NotFound();
             }
 
-            return NoContent(); 
+            return NoContent();
         }
     }
 }
