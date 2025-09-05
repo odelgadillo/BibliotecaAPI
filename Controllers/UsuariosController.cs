@@ -17,11 +17,13 @@ namespace BibliotecaAPI.Controllers
     {
         private readonly UserManager<IdentityUser> userManager;
         private readonly IConfiguration configuration;
+        private readonly SignInManager<IdentityUser> signInManager;
 
-        public UsuariosController(UserManager<IdentityUser> userManager, IConfiguration configuration)
+        public UsuariosController(UserManager<IdentityUser> userManager, IConfiguration configuration, SignInManager<IdentityUser> signInManager)
         {
             this.userManager = userManager;
             this.configuration = configuration;
+            this.signInManager = signInManager;
         }
 
         [HttpPost("registro")]
@@ -52,6 +54,35 @@ namespace BibliotecaAPI.Controllers
             }
         }
 
+        [HttpPost("login")]
+        [AllowAnonymous]
+        public async Task<ActionResult<RespuestaAutenticacionDTO>> Login(CredencialesUsuarioDTO credencialesUsuarioDTO)
+        {
+            var usuario = await userManager.FindByEmailAsync(credencialesUsuarioDTO.Email);
+
+            if (usuario is null)
+            {
+                return RetornarLoginIncorrecto();
+            }
+
+            var resultado = await signInManager.CheckPasswordSignInAsync(usuario, credencialesUsuarioDTO.Password!, lockoutOnFailure: false);
+            if (resultado.Succeeded)
+            {
+                return await ConstruirToken(credencialesUsuarioDTO);
+            }
+            else
+            {
+                return RetornarLoginIncorrecto();
+            }
+
+        }
+
+        private ActionResult RetornarLoginIncorrecto()
+        {
+            ModelState.AddModelError(string.Empty, "Login incorrecto");
+            return ValidationProblem();
+        }
+
         private async Task<RespuestaAutenticacionDTO> ConstruirToken(CredencialesUsuarioDTO credencialesUsuarioDTO)
         {
             var claims = new List<Claim>
@@ -78,7 +109,7 @@ namespace BibliotecaAPI.Controllers
             {
                 Token = token,
                 Expiracion = expiracion
-            };            
+            };
         }
 
     }
