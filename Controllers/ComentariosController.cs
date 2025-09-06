@@ -49,8 +49,8 @@ namespace BibliotecaAPI.Controllers
         public async Task<ActionResult<ComentarioDTO>> Get(Guid id)
         {
             var comentario = await context.Comentarios
-                .Include(x=>x.Usuario)
-                .FirstOrDefaultAsync(x => x.Id == id);
+                                    .Include(x => x.Usuario)
+                                    .FirstOrDefaultAsync(x => x.Id == id);
             if (comentario is null)
             {
                 return NotFound();

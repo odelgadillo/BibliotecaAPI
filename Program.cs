@@ -2,6 +2,7 @@ using System.Text;
 using System.Text.Json.Serialization;
 using BibliotecaAPI;
 using BibliotecaAPI.Datos;
+using BibliotecaAPI.Servicios;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -24,6 +25,8 @@ builder.Services.AddIdentityCore<IdentityUser>()
     .AddDefaultTokenProviders();
 builder.Services.AddScoped<UserManager<IdentityUser>>();        //Manejadro de usuarios para registrar usuarios
 builder.Services.AddScoped<SignInManager<IdentityUser>>();      //Permite autenticar usuarios
+builder.Services.AddTransient<IServiciosUsuarios, ServiciosUsuarios>(); // Para obtener el usuario logeado
+
 builder.Services.AddHttpContextAccessor();                      //Permite acceder al contexto http desde cualquier clase
 builder.Services.AddAuthentication().AddJwtBearer(opciones =>
 {
