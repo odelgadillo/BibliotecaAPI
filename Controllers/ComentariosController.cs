@@ -1,4 +1,5 @@
 using System.IO.Compression;
+using System.Xml.Linq;
 using AutoMapper;
 using BibliotecaAPI.Datos;
 using BibliotecaAPI.DTOs;
@@ -36,9 +37,10 @@ namespace BibliotecaAPI.Controllers
             }
 
             var comentarios = await context.Comentarios
-                                .Where(x => x.LibroId == libroId)
-                                .OrderByDescending(x => x.FechaPublicacion)
-                                .ToListAsync();
+                .Include(x => x.Usuario)
+                .Where(x => x.LibroId == libroId)
+                .OrderByDescending(x => x.FechaPublicacion)
+                .ToListAsync();
 
             return mapper.Map<List<ComentarioDTO>>(comentarios);
         }
@@ -46,7 +48,9 @@ namespace BibliotecaAPI.Controllers
         [HttpGet("{id}", Name = "ObtenerComentario")]
         public async Task<ActionResult<ComentarioDTO>> Get(Guid id)
         {
-            var comentario = await context.Comentarios.FirstOrDefaultAsync(x => x.Id == id);
+            var comentario = await context.Comentarios
+                .Include(x=>x.Usuario)
+                .FirstOrDefaultAsync(x => x.Id == id);
             if (comentario is null)
             {
                 return NotFound();
