@@ -42,6 +42,11 @@ builder.Services.AddAuthentication().AddJwtBearer(opciones =>
     };
 });
 
+builder.Services.AddAuthorization(opciones =>
+{
+    opciones.AddPolicy("esadmin", politica => politica.RequireClaim("esadmin", "true"));
+});
+
 var app = builder.Build();
 
 // area de middlewares (software intermedio)
