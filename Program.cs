@@ -2,6 +2,7 @@ using System.Text;
 using System.Text.Json.Serialization;
 using BibliotecaAPI;
 using BibliotecaAPI.Datos;
+using BibliotecaAPI.Entidades;
 using BibliotecaAPI.Servicios;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -20,11 +21,11 @@ builder.Services.AddDbContext<ApplicationDbContext>(opciones =>
 
 
 
-builder.Services.AddIdentityCore<IdentityUser>()
+builder.Services.AddIdentityCore<Usuario>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
-builder.Services.AddScoped<UserManager<IdentityUser>>();        //Manejadro de usuarios para registrar usuarios
-builder.Services.AddScoped<SignInManager<IdentityUser>>();      //Permite autenticar usuarios
+builder.Services.AddScoped<UserManager<Usuario>>();        //Manejadro de usuarios para registrar usuarios
+builder.Services.AddScoped<SignInManager<Usuario>>();      //Permite autenticar usuarios
 builder.Services.AddTransient<IServiciosUsuarios, ServiciosUsuarios>(); // Para obtener el usuario logeado
 
 builder.Services.AddHttpContextAccessor();                      //Permite acceder al contexto http desde cualquier clase
