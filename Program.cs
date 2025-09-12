@@ -13,6 +13,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 //area de servicios
 
+builder.Services.AddDataProtection();
+
 var origenesPermitidos = builder.Configuration.GetSection("origenesPermitidos").Get<string[]>()!;
 builder.Services.AddCors(opciones =>
 {
