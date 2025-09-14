@@ -39,7 +39,6 @@ builder.Services.AddIdentityCore<Usuario>()
 builder.Services.AddScoped<UserManager<Usuario>>();        //Manejadro de usuarios para registrar usuarios
 builder.Services.AddScoped<SignInManager<Usuario>>();      //Permite autenticar usuarios
 builder.Services.AddTransient<IServiciosUsuarios, ServiciosUsuarios>(); // Para obtener el usuario logeado
-builder.Services.AddTransient<IServicioHash, ServicioHash>();   // Para crear un Hash
 
 builder.Services.AddHttpContextAccessor();                      //Permite acceder al contexto http desde cualquier clase
 builder.Services.AddAuthentication().AddJwtBearer(opciones =>
@@ -64,12 +63,6 @@ builder.Services.AddAuthorization(opciones =>
 var app = builder.Build();
 
 // area de middlewares (software intermedio)
-
-app.Use(async (contexto, next) =>
-{
-    contexto.Response.Headers.Append("mi-cabecera", "valor");
-    await next();
-});
 
 app.UseCors();
 
