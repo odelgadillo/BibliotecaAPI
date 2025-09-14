@@ -60,7 +60,25 @@ builder.Services.AddAuthorization(opciones =>
     opciones.AddPolicy("esadmin", politica => politica.RequireClaim("esadmin", "true"));
 });
 
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(opciones =>
+{
+    opciones.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+    {
+        Title = "Biblioteca API",
+        Description = "Este es un web api para trabajar con datos de autores y libros",
+        Contact = new Microsoft.OpenApi.Models.OpenApiContact
+        {
+            Email = "odelgadillo@outlook.com",
+            Name = "Omar Delgadillo",
+            Url = new Uri("https://odelgadillo.com")
+        },
+        License = new Microsoft.OpenApi.Models.OpenApiLicense
+        {
+            Name = "MIT",
+            Url = new Uri("https://opensource.org/license/mit")
+        }
+    });
+});
 
 var app = builder.Build();
 
